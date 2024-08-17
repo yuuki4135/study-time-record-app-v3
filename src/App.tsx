@@ -1,11 +1,9 @@
-import React, { StrictMode } from 'react'
+import * as React from 'react';
 
 const App = () => {
   return (
     <>
-      <StrictMode>
-        <h1>Hello World</h1>
-      </StrictMode>
+      <h1>Hello World</h1>
     </>
   )
 }
