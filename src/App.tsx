@@ -1,9 +1,13 @@
-function App() {
+import React, { StrictMode } from 'react'
+
+const App = () => {
   return (
     <>
-      <h1>Hello World</h1>
+      <StrictMode>
+        <h1>Hello World</h1>
+      </StrictMode>
     </>
-  );
+  )
 }
 
-export default App;
+export default App
