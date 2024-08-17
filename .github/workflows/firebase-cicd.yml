@@ -20,14 +20,15 @@ jobs:
       - name: test
         run: npm run test
       - name: Build
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
+        run: npm ci && npm run build
+        # env:
+        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        #   VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
       - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STUDY_RECORD_APP_27B14 }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STUDY_RECORD_APP_TYPESCRIPT }}
           channelId: live
-          projectId: study-record-app-27b14
+          projectId: study-record-app-typescript
+
