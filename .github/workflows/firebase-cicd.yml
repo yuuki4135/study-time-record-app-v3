@@ -15,10 +15,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: test
-        run: npm run test
       - name: Build
         run: npm ci && npm run build
+      - name: test
+        run: npm run test
         # env:
         #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
         #   VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
