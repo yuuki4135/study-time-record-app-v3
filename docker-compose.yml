@@ -1,0 +1,10 @@
+services:
+  web:
+    container_name: study-time-record-app
+    build: ./
+    ports:
+      - 5173:5173
+    volumes:
+      - .:/home/node/app:cached
+    tty: true
+    stdin_open: true
