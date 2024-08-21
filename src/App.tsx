@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createClient } from "@supabase/supabase-js";
 import { Load } from '../compornents/organisms/load.tsx';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from '@chakra-ui/react';
 
 const supabaseUrl: string = process.env.VITE_SUPABASE_URL!
 const supabaseKey: string = process.env.VITE_SUPABASE_KEY!
@@ -8,7 +9,7 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 const App = () => {
   interface Record {
-    id: number;
+    id?: number;
     title: string;
     time: number;
     created_at: string;
@@ -27,13 +28,14 @@ const App = () => {
     if (!title || typeof time != 'number') {
       setError('入力されていない項目があります')
     }else{
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('study-record')
         .insert({ title, time })
+        .select();
       if(error){
         setError('保存に失敗しました') 
       }else{
-        setRecords([...records, { title, time }])
+        setRecords([...records, ...data])
         setTitle('')
         setTime(0)
         setError('')
@@ -85,6 +87,7 @@ const App = () => {
               時間
             </label>
           <button type="submit" data-testid='submit-button'>追加</button>
+          <AlertDialogExample/>
           </div>
           <div>
             入力されている学習内容: {title}
@@ -107,3 +110,44 @@ const App = () => {
 }
 
 export default App
+
+
+function AlertDialogExample() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
+
+  return (
+    <>
+      <Button colorScheme='red' onClick={onOpen}>
+        Delete Customer
+      </Button>
+
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Customer
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={onClose} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
+  )
+}
