@@ -17,14 +17,13 @@ const App = () => {
   
   const [records, setRecords] = React.useState<Record[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
-
+  const cancelRef = React.useRef()
   const [title, setTitle] = React.useState<string>('');
   const [time, setTime] = React.useState<number>(0);
   const [error, setError] = React.useState<string>('');
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleSubmit = async () => {
     if (!title || typeof time != 'number') {
       setError('入力されていない項目があります')
     }else{
@@ -39,6 +38,7 @@ const App = () => {
         setTitle('')
         setTime(0)
         setError('')
+        onClose()
       }
     }
   }
@@ -63,65 +63,24 @@ const App = () => {
       <title data-testid='title'>学習記録一覧</title>
       <Load loading={loading}>
         <h1>学習記録一覧</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>
-              学習内容
-              <input
-                type="text"
-                data-testid='title-input'
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </label>
+        <Button colorScheme='blue' onClick={onOpen}>
+          追加
+        </Button>
+        <div>
+          入力されている学習内容: {title}
+        </div>
+        <div>
+          入力されている学習時間: {time}時間
+        </div>
+        {records.map((record, index) => (
+          <div key={index}>
+            {record.title}: {record.time}時間
+            <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
           </div>
-          <div>
-            <label>
-              学習時間
-              <input
-                type="number"
-                data-testid='time-input'
-                value={time}
-                onChange={(e) => setTime(Number(e.target.value))}
-              />
-              時間
-            </label>
-          <button type="submit" data-testid='submit-button'>追加</button>
-          <AlertDialogExample/>
-          </div>
-          <div>
-            入力されている学習内容: {title}
-          </div>
-          <div>
-            入力されている学習時間: {time}時間
-          </div>
-          {records.map((record, index) => (
-            <div key={index}>
-              {record.title}: {record.time}時間
-              <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
-            </div>
-          ))}
-          <div>{error}</div>
-          <div>合計時間: {records.reduce((acc, record) => acc + record.time, 0)} / 1000 (h)</div>
-        </form>
+        ))}
+        <div>{error}</div>
+        <div>合計時間: {records.reduce((acc, record) => acc + record.time, 0)} / 1000 (h)</div>
       </Load>
-    </>
-  )
-}
-
-export default App
-
-
-function AlertDialogExample() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef()
-
-  return (
-    <>
-      <Button colorScheme='red' onClick={onOpen}>
-        Delete Customer
-      </Button>
-
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
@@ -130,19 +89,42 @@ function AlertDialogExample() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Delete Customer
+              学習記録入力
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              <form>
+                <div>
+                  <label>
+                    学習内容
+                    <input
+                      type="text"
+                      data-testid='title-input'
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    学習時間
+                    <input
+                      type="number"
+                      data-testid='time-input'
+                      value={time}
+                      onChange={(e) => setTime(Number(e.target.value))}
+                    />
+                    時間
+                  </label>
+                </div>
+              </form>
             </AlertDialogBody>
-
             <AlertDialogFooter>
+              <Button colorScheme='blue' onClick={handleSubmit} ml={3}>
+                追加
+              </Button>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
-              </Button>
-              <Button colorScheme='red' onClick={onClose} ml={3}>
-                Delete
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -151,3 +133,5 @@ function AlertDialogExample() {
     </>
   )
 }
+
+export default App
