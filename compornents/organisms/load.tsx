@@ -1,6 +1,11 @@
-import React from 'react'
+import * as React from 'react';
 
-export const Load = ({children, loading}) => {
+interface LoadProps {
+  children: React.ReactNode;
+  loading: boolean;
+}
+
+export const Load: React.FC<LoadProps> = ({children, loading}) => {
   return (
     <div>
       {loading ? '...loading' : children}
