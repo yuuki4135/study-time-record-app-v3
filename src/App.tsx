@@ -14,11 +14,11 @@ type Inputs = {
 };
 
 const App = () => {
-  interface Record {
-    id?: number;
-    title: string;
-    time: number;
-    created_at: string;
+  type Record = {
+    id: number
+    title: string
+    time: number
+    created_at: string
   }
   
   const [records, setRecords] = React.useState<Record[]>([]);
@@ -82,7 +82,7 @@ const App = () => {
       <title data-testid='title'>学習記録一覧</title>
       <Load loading={loading}>
         <h1>学習記録一覧</h1>
-        <Button colorScheme='blue' onClick={onOpen}>
+        <Button colorScheme='blue' onClick={onOpen} data-testid='add-button'>
           追加
         </Button>
         {records.map((record, index) => (
@@ -101,8 +101,8 @@ const App = () => {
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              学習記録入力
+            <AlertDialogHeader fontSize='lg' fontWeight='bold' data-testid='modal-title'>
+              新規登録
             </AlertDialogHeader>
 
             <AlertDialogBody>
@@ -133,7 +133,7 @@ const App = () => {
               </form>
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button colorScheme='blue' onClick={handleSubmit(submit)} ml={3}>
+              <Button colorScheme='blue' onClick={handleSubmit(submit)} ml={3} data-testid='submit-button'>
                 追加
               </Button>
               <Button ref={cancelRef} onClick={() => { onClose(); }} ml={3}>
