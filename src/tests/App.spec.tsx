@@ -1,7 +1,7 @@
 import * as React from 'react';
 import App from "../App";
 import '@testing-library/jest-dom';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 
@@ -16,15 +16,27 @@ jest.mock('@supabase/supabase-js', () => ({
           { id: 2, title: 'New Record', time: 120 },
         ], error: null })),
       })),
-      delete: jest.fn(() => Promise.resolve({ data: [], error: null })),
+      delete: jest.fn(() => ({
+        eq: jest.fn(() => Promise.resolve({ data: null, error: null })),
+      })),
+      update: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          select: jest.fn(() => Promise.resolve({ data: [
+            { id: 1, title: 'Test Record', time: 120 },
+          ], error: null})),
+        })),
+      })),
     })),
   })),
 }));
 
 describe("loading", () => {
-  it("should render loading", () => {
+  it("should render loading", async () => {
     render(<App />);
     expect(screen.getByText("...loading")).toBeInTheDocument();
+    await waitFor(() => {
+      screen.getByText("Test Record: 60時間");
+    });
   });
 });
 
@@ -64,14 +76,12 @@ describe("record", () => {
     await waitFor(async () => {
       const addButton = screen.getByTestId("add-button");
       userEvent.click(addButton);
-
       const titleInput = screen.getByTestId("title-input");
       await userEvent.type(titleInput, "New Record");
       const timeInput = screen.getByTestId("time-input");
       await userEvent.type(timeInput, "120");
       await userEvent.click(screen.getByTestId("submit-button"));
-
-      screen.debug();
+      expect(screen.getByText("New Record: 120時間")).toBeInTheDocument();
     });
   })
 
@@ -94,7 +104,7 @@ describe("record", () => {
       const addButton = screen.getByTestId("add-button");
       await userEvent.click(addButton);
       const timeInput = screen.getByTestId("time-input");
-      await userEvent.type(timeInput, "-1");
+      fireEvent.change(timeInput, { target: { value: '-1' } });
       await userEvent.click(screen.getByTestId("submit-button"));
       expect(screen.getByText("時間は0以上である必要があります")).toBeInTheDocument();
     });
@@ -107,7 +117,22 @@ describe("record", () => {
     await waitFor(async () => {
       const deleteButton = screen.getByTestId("delete-button");
       await userEvent.click(deleteButton);
-      expect(screen.queryByText("Test Record: 60時間")).not.toBeInTheDocument();
+        act(() => {
+          expect(screen.queryByText("Test Record: 60時間")).toBeNull();
+        });
+    });
+  })
+
+  it('edit-record', async () => {
+    await act(async() => {
+     render(<App />);
+    })
+    await waitFor(async () => {
+      const editButton = screen.getByTestId("edit-button");
+      await userEvent.click(editButton);
+      expect(screen.getByText("記録編集")).toBeInTheDocument();
+      await userEvent.click(screen.getByTestId("submit-button"));
+      expect(screen.getByText("Test Record: 120時間")).toBeInTheDocument();
     });
   })
 });

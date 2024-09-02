@@ -9,6 +9,7 @@ const supabaseKey: string = process.env.VITE_SUPABASE_KEY!
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 type Inputs = {
+  id: number | null;
   title: string;
   time: number;
 };
@@ -26,26 +27,44 @@ const App = () => {
   const cancelRef = React.useRef(null)
   const [error, setError] = React.useState<string>('');
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>({
+  const { register, handleSubmit, formState: { errors }, reset , setValue, getValues } = useForm<Inputs>({
     defaultValues: {
+      id: null,
       title: '',
       time: 0
     }
   })
 
   const submit = async (inputData: Inputs) => {
-    const { data, error } = await supabase
-      .from('study-record')
-      .insert(inputData)
-      .select()
-    if (error) {
-      setError(error.message)
+    if(inputData.id) {
+      const { data, error } = await supabase
+        .from('study-record')
+        .update(inputData)
+        .eq('id', inputData.id)
+        .select()
+      if (error) {
+        setError(error.message)
+      }
+      if (data) {
+        setRecords([...records.filter(record => record.id !== inputData.id), ...data])
+        reset({ title: '' })
+        reset({ time: 0 })
+      }
+    }else{
+      const { data, error } = await supabase
+        .from('study-record')
+        .insert(inputData)
+        .select()
+      if (error) {
+        setError(error.message)
+      }
+      if (data) {
+        setRecords([...records, ...data])
+        reset({ title: '' })
+        reset({ time: 0 })
+      }
     }
-    if (data) {
-      setRecords([...records, ...data])
-      reset({ title: '' })
-      reset({ time: 0 })
-    }
+        
     onClose()
   }
 
@@ -77,18 +96,26 @@ const App = () => {
     }
   }
 
+  const setEdit = (id: number) => {
+    setValue('title', records.find(record => record.id === id)?.title ?? '')
+    setValue('time', records.find(record => record.id === id)?.time ?? 0)
+    setValue('id', id)
+  }
+    
+
   return (
     <>
       <title data-testid='title'>学習記録一覧</title>
       <Load loading={loading}>
         <h1>学習記録一覧</h1>
-        <Button colorScheme='blue' onClick={onOpen} data-testid='add-button'>
+        <Button colorScheme='blue' onClick={()=>{onOpen(); reset();}} data-testid='add-button'>
           追加
         </Button>
         {records.map((record, index) => (
           <div key={index} data-testid='content'>
             {record.title}: {record.time}時間
-            <button type='button' onClick={()=>{deleteRecord(record.id!)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
+            <button type='button' onClick={()=>{onOpen(); setEdit(record.id)}} style={{marginLeft: '10px'}} data-testid='edit-button'>編集</button>
+            <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
           </div>
         ))}
         <div>{error}</div>
@@ -102,7 +129,7 @@ const App = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold' data-testid='modal-title'>
-              新規登録
+              {getValues("id") ? '記録編集' : '新規登録'}
             </AlertDialogHeader>
 
             <AlertDialogBody>
