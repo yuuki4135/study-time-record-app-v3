@@ -1,7 +1,17 @@
 import * as React from 'react';
 import { createClient } from "@supabase/supabase-js";
 import { Load } from '../compornents/organisms/load.tsx';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from '@chakra-ui/react';
+import { Index } from '../compornents/organisms/index.tsx';
+import { 
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useForm } from "react-hook-form";
 
 const supabaseUrl: string = process.env.VITE_SUPABASE_URL!
@@ -107,19 +117,7 @@ const App = () => {
     <>
       <title data-testid='title'>学習記録一覧</title>
       <Load loading={loading}>
-        <h1>学習記録一覧</h1>
-        <Button colorScheme='blue' onClick={()=>{onOpen(); reset();}} data-testid='add-button'>
-          追加
-        </Button>
-        {records.map((record, index) => (
-          <div key={index} data-testid='content'>
-            {record.title}: {record.time}時間
-            <button type='button' onClick={()=>{onOpen(); setEdit(record.id)}} style={{marginLeft: '10px'}} data-testid='edit-button'>編集</button>
-            <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
-          </div>
-        ))}
-        <div>{error}</div>
-        <div>合計時間: {records.reduce((acc, record) => acc + record.time, 0)} / 1000 (h)</div>
+        <Index records={records} onOpen={onOpen} deleteRecord={deleteRecord} setEdit={setEdit} reset={reset}/>
       </Load>
       <AlertDialog
         isOpen={isOpen}
@@ -166,6 +164,7 @@ const App = () => {
               <Button ref={cancelRef} onClick={() => { onClose(); }} ml={3}>
                 Cancel
               </Button>
+              {error && <div style={{color: 'red'}}>{error}</div>}
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
