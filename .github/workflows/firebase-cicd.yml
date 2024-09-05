@@ -19,9 +19,9 @@ jobs:
         run: npm ci && npm run build
       - name: test
         run: npm run test
-        # env:
-        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-        #   VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_KEY }}
       - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
