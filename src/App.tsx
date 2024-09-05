@@ -13,6 +13,7 @@ import {
   useDisclosure,
   Input,
   Flex,
+  Spacer,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -132,7 +133,11 @@ const App = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold' data-testid='modal-title'>
-              {getValues("id") ? '記録編集' : '新規登録'}
+              <Flex>
+                {getValues("id") ? '記録編集' : '新規登録'}
+                <Spacer />
+                <Button onClick={() => {reset(); onClose();}}>×</Button>
+              </Flex>
             </AlertDialogHeader>
 
             <AlertDialogBody>
