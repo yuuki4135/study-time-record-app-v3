@@ -21,6 +21,7 @@ import {
   NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { useForm } from "react-hook-form";
+import { Record } from '../types/record';
 
 const supabaseUrl: string = process.env.VITE_SUPABASE_URL!
 const supabaseKey: string = process.env.VITE_SUPABASE_KEY!
@@ -32,14 +33,7 @@ type Inputs = {
   time: number;
 };
 
-const App = () => {
-  type Record = {
-    id: number
-    title: string
-    time: number
-    created_at: string
-  }
-  
+const App = () => {  
   const [records, setRecords] = React.useState<Record[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const cancelRef = React.useRef(null)
