@@ -21,7 +21,7 @@ type Props = {
   setEdit: (id: number) => void
 }
 
-export const Index:React.FC<Props> = ({records, deleteRecord, onOpen, reset, setEdit}) => {
+export const Index:React.FC<Props> = React.memo(({records, deleteRecord, onOpen, reset, setEdit}) => {
   return (
     <Flex direction='column' align='center'>
       <h1>学習記録一覧</h1>
@@ -58,4 +58,4 @@ export const Index:React.FC<Props> = ({records, deleteRecord, onOpen, reset, set
       </TableContainer>
     </Flex>
   )
-}
+});

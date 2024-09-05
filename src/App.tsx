@@ -11,6 +11,13 @@ import {
   AlertDialogOverlay,
   Button,
   useDisclosure,
+  Input,
+  Flex,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from '@chakra-ui/react';
 import { useForm } from "react-hook-form";
 
@@ -61,9 +68,10 @@ const App = () => {
         reset({ time: 0 })
       }
     }else{
+      const newData = { title: getValues("title"), time: getValues("time") }
       const { data, error } = await supabase
         .from('study-record')
-        .insert(inputData)
+        .insert(newData)
         .select()
       if (error) {
         setError(error.message)
@@ -72,11 +80,10 @@ const App = () => {
         setRecords([...records, ...data])
         reset({ title: '' })
         reset({ time: 0 })
+        onClose()
       }
     }
-    onClose()
   }
-
 
   React.useEffect(() => {
     const fetchRecords = async () => {
@@ -93,7 +100,7 @@ const App = () => {
     fetchRecords()
   }, [])
 
-  const deleteRecord = async (id: number) => {
+  const deleteRecord = React.useCallback(async (id: number) => {
     const { error } = await supabase
       .from('study-record')
       .delete()
@@ -103,13 +110,13 @@ const App = () => {
     } else {
       setRecords(records.filter(record => record.id !== id))
     }
-  }
+  }, [records])
 
-  const setEdit = (id: number) => {
+  const setEdit = React.useCallback((id: number) => {
     setValue('title', records.find(record => record.id === id)?.title ?? '')
     setValue('time', records.find(record => record.id === id)?.time ?? 0)
     setValue('id', id)
-  }
+  }, [records])
 
   return (
     <>
@@ -133,7 +140,7 @@ const App = () => {
                 <div>
                   <label>
                     学習内容
-                    <input
+                    <Input
                       type="text"
                       data-testid='title-input'
                       {...register("title", { required: '内容の入力は必須です' })}
@@ -144,12 +151,13 @@ const App = () => {
                 <div>
                   <label>
                     学習時間
-                    <input
-                      type="number"
-                      data-testid='time-input'
-                      {...register("time", { required: '時間の入力は必須です', min: { value: 0, message: '時間は0以上である必要があります' } })}
-                    />
-                    時間
+                    <NumberInput defaultValue={0} min={0}>
+                      <NumberInputField data-testid='time-input' {...register("time", { required: '時間の入力は必須です', min: { value: 0, message: '時間は0以上である必要があります' } })}/>
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
                   </label>
                   {errors.time && <div style={{color: 'red'}}>{errors.time.message?.toString()}</div>}
                 </div>
