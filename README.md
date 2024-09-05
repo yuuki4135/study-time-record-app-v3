@@ -1,50 +1,30 @@
-# React + TypeScript + Vite
+# 学習記録アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## アプリ紹介
+Reactの勉強のため、作成した学習時間記録アプリです。  
+DBはsupabaseを利用しております。  
+主な機能としては、学習の内容と学習時間を記録すること。  
+勉強時間の合計を表示します。
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 環境設定の方法
+template.envをコピーし、.envにリネームしてください
+以下.envの内容を編集してください
+```.env
+VITE_SUPABASE_URL=<SUPABASEの管理画面で取得したURL>
+VITE_SUPABASE_KEY=<SUPABASEの管理画面で取得したキー>
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+## ローカル環境起動の仕方
+```bash
+npm install
+npm run dev
 ```
+
+## テスト
+```bash
+npm run test
+```
+
+## バージョン
+node v20.15.0  
+npm 10.7.0
