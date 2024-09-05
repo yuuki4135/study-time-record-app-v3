@@ -61,6 +61,7 @@ const App = () => {
         setRecords([...records.filter(record => record.id !== inputData.id), ...data])
         reset({ title: '' })
         reset({ time: 0 })
+        onClose()
       }
     }else{
       const newData = { title: getValues("title"), time: getValues("time") }
