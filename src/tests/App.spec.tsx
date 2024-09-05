@@ -35,7 +35,7 @@ describe("loading", () => {
     render(<App />);
     expect(screen.getByText("...loading")).toBeInTheDocument();
     await waitFor(() => {
-      screen.getByText("Test Record: 60時間");
+      screen.getByText("60時間");
     });
   });
 });
@@ -46,7 +46,7 @@ describe("record", () => {
      render(<App />);
     })
     await waitFor(() => {
-      expect(screen.getByText("Test Record: 60時間")).toBeInTheDocument();
+      expect(screen.getByText("60時間")).toBeInTheDocument();
     });
   });
 
@@ -55,7 +55,7 @@ describe("record", () => {
      render(<App />);
     })
     await waitFor(() => {
-      expect(screen.getByText("追加")).toBeInTheDocument();
+      expect(screen.getByText("新規登録")).toBeInTheDocument();
     });
   });
 
@@ -81,7 +81,7 @@ describe("record", () => {
       const timeInput = screen.getByTestId("time-input");
       await userEvent.type(timeInput, "120");
       await userEvent.click(screen.getByTestId("submit-button"));
-      expect(screen.getByText("New Record: 120時間")).toBeInTheDocument();
+      expect(screen.getByText("120時間")).toBeInTheDocument();
     });
   })
 
@@ -92,7 +92,7 @@ describe("record", () => {
     await waitFor(async () => {
       const addButton = screen.getByTestId("add-button");
       await userEvent.click(addButton);
-      expect(screen.getByText("新規登録")).toBeInTheDocument();
+      expect(screen.getByTestId('modal-title')).toHaveTextContent('新規登録');
     });
   })
 
@@ -118,7 +118,7 @@ describe("record", () => {
       const deleteButton = screen.getByTestId("delete-button");
       await userEvent.click(deleteButton);
         act(() => {
-          expect(screen.queryByText("Test Record: 60時間")).toBeNull();
+          expect(screen.queryByText("60時間")).toBeNull();
         });
     });
   })
@@ -132,7 +132,7 @@ describe("record", () => {
       await userEvent.click(editButton);
       expect(screen.getByText("記録編集")).toBeInTheDocument();
       await userEvent.click(screen.getByTestId("submit-button"));
-      expect(screen.getByText("Test Record: 120時間")).toBeInTheDocument();
+      expect(screen.getByText("120時間")).toBeInTheDocument();
     });
   })
 });

@@ -74,7 +74,6 @@ const App = () => {
         reset({ time: 0 })
       }
     }
-        
     onClose()
   }
 
@@ -111,7 +110,6 @@ const App = () => {
     setValue('time', records.find(record => record.id === id)?.time ?? 0)
     setValue('id', id)
   }
-    
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react' 
 import {
   Button,
   Table,
@@ -11,6 +11,7 @@ import {
   TableContainer,
   Flex
 } from '@chakra-ui/react'
+import { MdCreate, MdOutlineRestoreFromTrash } from "react-icons/md";
 
 type Props = {
   records: {id: number, title: string, time: number, created_at: string}[]
@@ -28,7 +29,7 @@ export const Index:React.FC<Props> = ({records, deleteRecord, onOpen, reset, set
         新規登録
       </Button>
       <TableContainer>
-        <Table variant='simple'>
+        <Table variant='simple' size='lg'>
           <Thead>
             <Tr>
               <Th>学習内容</Th>
@@ -42,16 +43,16 @@ export const Index:React.FC<Props> = ({records, deleteRecord, onOpen, reset, set
                 <Td>{record.title}</Td>
                 <Td>{record.time}時間</Td>
                 <Td>
-                  <button type='button' onClick={()=>{onOpen(); setEdit(record.id)}} style={{marginLeft: '10px'}} data-testid='edit-button'>編集</button>
-                  <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'>削除</button>
+                  <button type='button' onClick={()=>{onOpen(); setEdit(record.id)}} style={{marginLeft: '10px'}} data-testid='edit-button'><MdCreate /></button>
+                  <button type='button' onClick={()=>{deleteRecord(record.id)}} style={{marginLeft: '10px'}} data-testid='delete-button'><MdOutlineRestoreFromTrash /></button>
                 </Td>
               </Tr>
             ))}
           </Tbody>
-          <Tfoot style={{display: 'flex', justifyContent: 'center'}}>
-            <div>
-              合計時間: {records.reduce((acc, record) => acc + record.time, 0)} / 1000 (h)
-            </div>
+          <Tfoot>
+            <Tr>
+              <Td style={{textAlign: 'center'}} colSpan={3}>合計時間: {records.reduce((acc, record) => acc + record.time, 0)} / 1000 (h)</Td>
+            </Tr>
           </Tfoot>
         </Table>
       </TableContainer>
